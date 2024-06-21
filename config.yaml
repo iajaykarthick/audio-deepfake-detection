@@ -1,6 +1,5 @@
 data_paths:
   raw_data_path: "data/raw/"
   processed_data_path: "data/processed/"
-  train_raw_path: "data/raw/codecfake/train"
-  train_flac_raw_path: "data/raw/codecfake/train_flac"
+  train_raw_audio_path: "data/raw/codecfake/train_flac"
   label_raw_path: "data/raw/codecfake/label"
