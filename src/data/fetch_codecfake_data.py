@@ -4,7 +4,7 @@ import zipfile
 import hashlib
 import requests
 import argparse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from utils.config import load_config
 
@@ -78,7 +78,7 @@ def download_parts(config):
         'train_split.z18': '24fc5547fb782d59a8f94e53eb9fd2bc',
         'train_split.z19': '2ded1a7fda786a04743923790a27f39f',
         'train_split.zip': '600a9ab2c5d820004fecc0e67ac2f645',
-        'label.zip': '1886fa25a8e018307e709da28bdc57b2'
+        'label.zip'      : '1886fa25a8e018307e709da28bdc57b2'
     }
     
     # Set up the ThreadPoolExecutor
@@ -106,15 +106,92 @@ def unzip_file(zip_path, output_path):
         print(f"Files extracted from {zip_path} to {output_path}")
         
         
-def extract_specific_files_with_7z(archive_path, output_path, files_to_extract):
+def extract_specific_files_with_7z(archive_path, output_path, files_to_extract, verbose=False):
     """Extract specific files from a multi-part zip archive using 7z from a subprocess."""
     try:
         # Prepare the command to include specific files
         command = ['7z', 'x', archive_path, f'-o{output_path}', '-aos'] + files_to_extract
-        subprocess.run(command, check=True)
-        print(f"Extracted specified files to {output_path}")
+        if verbose:
+            subprocess.run(command, check=True)
+        else:
+            subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if verbose:
+            print(f"Extracted specified files to {output_path}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to extract files: {str(e)}")
+        
+
+def list_files_in_archive(archive_path):
+    try:
+        # Prepare the command to list files in the archive
+        command = ['7z', 'l', archive_path]
+        
+        # Run the command and capture the output
+        result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        # Decode the output and split by lines
+        output = result.stdout.decode('utf-8').splitlines()
+        
+        # Find the start of the file listing (usually after the headers)
+        files = []
+        for line in output:
+            if line.endswith('.wav'):
+                files.append(line.split()[-1])
+        
+        return files
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to list files: {str(e)}")
+        return []
+
+
+def sort_files(files):
+    real_files = sorted([f for f in files if not f.replace('train/', '').startswith('F0')])
+    fake_files = sorted([f for f in files if f.replace('train/', '').startswith('F0')])
+    return real_files + fake_files
+
+        
+def extract_and_convert_files(real_file, fake_files, archive_path, output_base):
+    """
+    Extract files from the archive, convert to FLAC, and save in the specified directory structure.
+    
+    :param file_mapping: Dictionary mapping real audio files to their corresponding fake audio files.
+    :param archive_path: Path to the 7z archive.
+    :param output_base: Base directory for the output files.
+    """
+    
+    # Extract ID from the real file
+    file_id = real_file.replace('train/', '').replace('.wav', '')
+    output_directory = os.path.join(output_base, file_id)
+    
+    # Create the output directory if it doesn't exist
+    os.makedirs(output_directory, exist_ok=True)
+    
+    # Files to extract
+    files_to_extract = [real_file] + fake_files
+    
+    for file in files_to_extract:
+        
+        # Construct the FLAC filename
+        flac_filename = os.path.basename(file).replace('.wav', '.flac')
+        flac_file_path = os.path.join(output_directory, flac_filename)
+        
+        # Skip conversion if the FLAC file already exists
+        if os.path.exists(flac_file_path):
+            continue 
+        
+        # Prepare the temporary file path
+        temp_wav_file = os.path.join(output_base, file)
+        
+        # Extract the file
+        extract_specific_files_with_7z(archive_path, output_base, [file])
+        
+        # Convert to FLAC
+        ffmpeg_command = ['ffmpeg', '-i', temp_wav_file, '-c:a', 'flac', flac_file_path]
+        subprocess.run(ffmpeg_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # Remove the temporary .wav file
+        os.remove(temp_wav_file)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Process the files based on user input.")
@@ -138,27 +215,58 @@ def main():
         
     # Proceed to extract specific files
     archive_path = f"{config['data_paths']['raw_data_path']}/codecfake/train_split.zip"
-    output_path = f"{config['data_paths']['raw_data_path']}/codecfake/"
-    files_to_extract = [
-        # SSB13650058.wav
-        'train/SSB13650058.wav',
-        'train/F01_SSB13650058.wav',
-        'train/F02_SSB13650058.wav',
-        'train/F03_SSB13650058.wav',
-        'train/F04_SSB13650058.wav',
-        'train/F05_SSB13650058.wav',
-        'train/F06_SSB13650058.wav',
-        # SSB13280206.wav
-        'train/SSB13280206.wav',
-        'train/F01_SSB13280206.wav',
-        'train/F02_SSB13280206.wav',
-        'train/F03_SSB13280206.wav',
-        'train/F04_SSB13280206.wav',
-        'train/F05_SSB13280206.wav',
-        'train/F06_SSB13280206.wav',
-    ]
-    print(f"Extracting specific files from {archive_path} to {output_path}")
-    extract_specific_files_with_7z(archive_path, output_path, files_to_extract)
+    # output_path = f"{config['data_paths']['raw_data_path']}/codecfake/"
+    train_flac_base = f"{config['data_paths']['raw_data_path']}/codecfake/train_flac"
+    
+    files = list_files_in_archive(archive_path)
+    files = sort_files(files)
+    
+    file_mapping = {}
+    for file in files:
+        # Fake Audio
+        if file.replace('train/', '').startswith('F0'):
+            # Real Audio
+            real_file = f"train/{file.replace('train/', '')[4:]}"
+            if real_file not in file_mapping.keys():
+                print(f"Real file missing for {file}")
+                continue
+            else:
+                file_mapping[real_file].append(file)
+        else:
+            if file not in file_mapping:
+                file_mapping[file] = []
+    
+    # extract_and_convert_files(file_mapping, archive_path, train_flac_base)
+    
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(extract_and_convert_files, real_file, fake_files, archive_path, train_flac_base)
+                   for real_file, fake_files in file_mapping.items()]
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print(f"Error processing file: {e}")
+    
+    # files_to_extract = [
+    #     # SSB13650058.wav
+    #     'train/SSB13650058.wav',
+    #     'train/F01_SSB13650058.wav',
+    #     'train/F02_SSB13650058.wav',
+    #     'train/F03_SSB13650058.wav',
+    #     'train/F04_SSB13650058.wav',
+    #     'train/F05_SSB13650058.wav',
+    #     'train/F06_SSB13650058.wav',
+    #     # SSB13280206.wav
+    #     'train/SSB13280206.wav',
+    #     'train/F01_SSB13280206.wav',
+    #     'train/F02_SSB13280206.wav',
+    #     'train/F03_SSB13280206.wav',
+    #     'train/F04_SSB13280206.wav',
+    #     'train/F05_SSB13280206.wav',
+    #     'train/F06_SSB13280206.wav',
+    # ]
+    # print(f"Extracting specific files from {archive_path} to {output_path}")
+    # extract_specific_files_with_7z(archive_path, output_path, files_to_extract)
 
 
 if __name__ == "__main__":
