@@ -1,3 +1,4 @@
+# Data and ML Libraries
 numpy
 scipy
 librosa
@@ -7,5 +8,17 @@ keras
 matplotlib
 seaborn
 pandas
-jupyter
 tqdm
+
+# Jupyter
+jupyter
+
+# Dash
+dash>=2.5.0
+dash-core-components
+dash-html-components
+dash-bootstrap-components
+dash-bootstrap-templates
+
+# Werkzeug
+werkzeug==2.0.1
