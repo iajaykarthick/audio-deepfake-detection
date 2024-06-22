@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libhdf5-dev \
     pkg-config \
     libsndfile1 \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,8 +31,9 @@ COPY . /app/
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Make port 8888 available to the world outside this container
+# Expose ports for Jupyter and Dash
 EXPOSE 8888
+EXPOSE 8050
 
 # Run app.py when the container launches
 CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
