@@ -22,3 +22,11 @@ dash-bootstrap-templates
 
 # Werkzeug
 werkzeug==2.0.1
+
+# Hugging Face
+transformers
+datasets
+huggingface-hub
+
+# Streamlit
+streamlit
