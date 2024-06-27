@@ -1,32 +1,33 @@
-# Data and ML Libraries
+# Data and Machine Learning Libraries
 numpy
 scipy
-librosa
-soundfile
+pandas
+scikit-learn
 tensorflow
 keras
+transformers
+datasets
+huggingface-hub
+
+# Audio Processing Libraries
+librosa
+soundfile
+
+# Visualization Libraries
 matplotlib
 seaborn
-pandas
 tqdm
 
-# Jupyter
-jupyter
-
-# Dash
+# Dashboard and Web Application Frameworks
 dash>=2.5.0
 dash-core-components
 dash-html-components
 dash-bootstrap-components
 dash-bootstrap-templates
+streamlit
 
-# Werkzeug
+# Server and Backend Utilities
 werkzeug==2.0.1
 
-# Hugging Face
-transformers
-datasets
-huggingface-hub
-
-# Streamlit
-streamlit
+# Jupyter Environment
+jupyter
