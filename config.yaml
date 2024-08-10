@@ -1,5 +1,19 @@
 data_paths:
-  raw_data_path: "data/raw/"
-  processed_data_path: "data/processed/"
-  train_raw_audio_path: "data/raw/codecfake/train_flac"
-  label_raw_path: "data/raw/codecfake/label"
+  raw: "data/raw/"
+  processed: "data/processed/"
+  features: "data/features/"
+  codecfake: 
+    zip_files: "data/raw/codecfake/zip"
+    audio_files: "data/raw/codecfake/audio"
+    label_files: "data/raw/codecfake/label"
+    cache_files: "data/raw/codecfake/cache"
+    features: "data/features/codecfake"
+  wavefake:
+    zip_files: "data/raw/wavefake/zip"
+    audio_files: "data/raw/wavefake/audio"
+    cache_files: "data/raw/wavefake/cache"
+    features: "data/features/wavefake"
+    
+huggingface_repo_id:
+  codecfake: "ajaykarthick/codecfake-audio"
+  wavefake: "ajaykarthick/wavefake-audio"
