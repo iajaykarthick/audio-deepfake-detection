@@ -1,5 +1,58 @@
-.Trash-0
-/data
-.ipynb_checkpoints
+# Data files
+/data/
+*.csv
+*.tsv
+*.json
+*.parquet
+
+# PyCharm
+.idea/
+*.iml
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# MacOS
 .DS_Store
+
+# dotenv
 .env
+
+# virtualenv
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Model files
+models/
+*.h5
+*.hdf5
+*.pb
+*.pth
+*.pt
+*.onnx
+*.ckpt
+
+# Cache
+cache/
+.cache/
+*.cache
+__pycache__/
+
+# Trash
+.Trash-*
+
+# MLFlow
+mlruns/
+mlartifacts/
