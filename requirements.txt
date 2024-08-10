@@ -1,5 +1,5 @@
 # Data and Machine Learning Libraries
-numpy<2.0.0
+numpy
 scipy
 pandas
 scikit-learn
@@ -10,17 +10,19 @@ datasets
 huggingface-hub
 
 # Audio Processing Libraries
-librosa==0.10.0.post2
+pydub
+librosa
 soundfile
-soxr==0.3.2
+praat-parselmouth
 
 # Visualization Libraries
 matplotlib
 seaborn
+umap-learn
 tqdm
 
 # Dashboard and Web Application Frameworks
-dash
+dash>=2.5.0
 dash-core-components
 dash-html-components
 dash-bootstrap-components
@@ -32,3 +34,16 @@ werkzeug==2.0.1
 
 # Jupyter Environment
 jupyter
+IPython
+ipywidgets
+ipympl
+
+# Model Interpretation Libraries
+shap
+lime
+
+# statistical analysis
+pingouin
+
+# imbalance learning
+imbalanced-learn
