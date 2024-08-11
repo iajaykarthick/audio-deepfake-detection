@@ -35,7 +35,7 @@ env.bak/
 venv.bak/
 
 # Model files
-models/
+./models/
 *.h5
 *.hdf5
 *.pb
