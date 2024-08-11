@@ -53,12 +53,14 @@ ALL_VOICE_QUALITY_FEATURES = [
 ]
 
 
+# Default features to extract
 DEFAULT_FEATURES = {
     'spectral': DEFAULT_SPECTRAL_FEATURES,
     'prosodic': DEFAULT_PROSODIC_FEATURES,
     'voice_quality': DEFAULT_VOICE_QUALITY_FEATURES
 }
 
+# All features to extract
 ALL_FEATURES = {
     'spectral': ALL_SPECTRAL_FEATURES,
     'prosodic': ALL_PROSODIC_FEATURES,
