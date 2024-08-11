@@ -16,8 +16,8 @@ The module's design is highly modular, making it easy to integrate and scale. Re
 
 - `__init__.py`: Initializes the `features.extraction` package, allowing classes and functions to be imported.
 - `features_list.py`: Manages lists of feature names used throughout the various extraction modules.
-- `high_level_features_extractor.py`: Extracts complex statistical features from simple low-level data.
-- `low_level_features_extractor.py`: Pulls basic low-level features from raw audio data.
+- `high_level_features_extractor.py`: Extracts complex statistical features from detailed low-level data.
+- `low_level_features_extractor.py`: Pulls detailed low-level features from raw audio data.
 - `prosodic_features.py`: Focuses on features related to the rhythm and intonation of speech.
 - `spectral_features.py`: Extracts features that describe the audio spectrum.
 - `voice_quality_features.py`: Collects features that show the quality and traits of the voice.
@@ -26,7 +26,7 @@ The module's design is highly modular, making it easy to integrate and scale. Re
 
 ### 1. Input
 
-The workflow starts with raw audio data which is preprocessed to get it ready for feature extraction. This may include reducing noise and adjusting levels.
+The workflow starts with raw audio data which is preprocessed to get it ready for feature extraction.
 
 ### 2. Detailed Low-Level Feature Extraction
 
