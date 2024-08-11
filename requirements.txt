@@ -22,18 +22,21 @@ umap-learn
 tqdm
 
 # Dashboard and Web Application Frameworks
-dash>=2.5.0
-dash-core-components
-dash-html-components
-dash-bootstrap-components
-dash-bootstrap-templates
+# dash>=2.5.0
+# dash-core-components
+# dash-html-components
+# dash-bootstrap-components
+# dash-bootstrap-templates
 streamlit
 
 # Server and Backend Utilities
 werkzeug==2.0.1
 
 # Jupyter Environment
+jsonschema==3.2.0
 jupyter
+jupyterlab
+notebook
 IPython
 ipywidgets
 ipympl
