@@ -13,6 +13,12 @@ data/
         ├── __init__.py
         ├── download.py
         ├── extract.py
-        ├── codecfake_data_pipeline.py
+        ├── codecfake_ingestion_pipeline.py
+        └── upload_to_huggingface.py
+    └── wavefake/
+        ├── __init__.py
+        ├── download.py
+        ├── extract.py
+        ├── wavefake_ingestion_pipeline.py
         └── upload_to_huggingface.py
 ```
