@@ -21,6 +21,7 @@ The module's design is highly modular, making it easy to integrate and scale. Re
 - `prosodic_features.py`: Focuses on features related to the rhythm and intonation of speech.
 - `spectral_features.py`: Extracts features that describe the audio spectrum.
 - `voice_quality_features.py`: Collects features that show the quality and traits of the voice.
+- `stat_measures.py`: Provides statistical analysis tools to compute measures such as mean, variance, and skewness for extracted detailed low-level features.
 
 ## Workflow
 
