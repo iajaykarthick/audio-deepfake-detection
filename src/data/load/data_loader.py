@@ -18,6 +18,8 @@ def load_audio_data(audio_ids, dataset='codecfake', cache_dir=None):
     """
     if dataset == 'codecfake':
         return codecfake.get_audio_dataset(audio_ids, cache_dir=cache_dir)
+    elif dataset == 'wavefake':
+        return wavefake.get_audio_dataset(audio_ids, cache_dir=cache_dir)
     else:
         raise ValueError(f"Invalid dataset: {dataset}") 
     
