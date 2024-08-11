@@ -1,14 +1,53 @@
 version: '3.8'
+
 services:
   app:
     build: .
     volumes:
       - .:/app
-      - ./data:/app/data
+      - ./dags:/opt/airflow/dags    # Mount DAGs directory for Airflow
     ports:
-      - "8888:8888"
-      - "8050:8050"
-    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+      - "8888:8888"  # Jupyter Notebook
+      - "8050:8050"  # Dash or other web apps
+      - "8080:8080"  # Airflow Webserver
+    env_file:
+      - .env
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - MLFLOW_TRACKING_URI=http://mlflow:5001  # MLflow tracking URI
+      - AIRFLOW__SMTP__SMTP_HOST=${SMTP_HOST}
+      - AIRFLOW__SMTP__SMTP_PORT=${SMTP_PORT}
+      - AIRFLOW__SMTP__SMTP_USER=${SMTP_USER}
+      - AIRFLOW__SMTP__SMTP_PASSWORD=${SMTP_PASSWORD}
+      - AIRFLOW__SMTP__SMTP_MAIL_FROM=${SMTP_MAIL_FROM}
+    depends_on:
+      - mlflow
+      - postgres
+    command: >
+      sh -c "airflow webserver --port 8080 & airflow scheduler"
+
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/mlflow
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
