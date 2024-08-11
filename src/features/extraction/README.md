@@ -16,7 +16,7 @@ The module's design is highly modular, making it easy to integrate and scale. Re
 
 - `__init__.py`: Initializes the `features.extraction` package, allowing classes and functions to be imported.
 - `features_list.py`: Manages lists of feature names used throughout the various extraction modules.
-- `high_level_features_extractor.py`: Extracts complex statistical features from detailed low-level data.
+- `high_level_features_extractor.py`: Extracts complex statistical features from detailed low-level features.
 - `low_level_features_extractor.py`: Pulls detailed low-level features from raw audio data.
 - `prosodic_features.py`: Focuses on features related to the rhythm and intonation of speech.
 - `spectral_features.py`: Extracts features that describe the audio spectrum.
