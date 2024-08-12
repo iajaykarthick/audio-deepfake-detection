@@ -30,7 +30,7 @@ run_id = None
 # test_csv = '/app/data/pipeline/training/preprocessed_test.csv'
 test_csv = '/app/data/pipeline/inference/iteration_8.csv'
 selected_features_path = '/app/models/selected_features.pkl'
-email_recipient = email_recipient = os.getenv('EMAIL_RECIPIENT', 'ajaykarthick483@hotmail.com') # Email recipient for sending results
+email_recipient = os.getenv('EMAIL_RECIPIENT', 'ajaykarthick483@hotmail.com') # Email recipient for sending results
 
 imputer_path = '/app/models/imputer.pkl'
 scaler_path = '/app/models/scaler.pkl'
