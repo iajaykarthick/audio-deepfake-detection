@@ -14,3 +14,4 @@ Key components of the system include:
 * Continuous Monitoring and Adaptation: The system features a dynamic monitoring pipeline that tracks model performance in real-time. It automatically detects data drift and triggers model retraining when necessary, ensuring that the system adapts to new types of deepfake threats over time.
 
 ![end_to_end_diagram](docs/end_to_end.png)
+
