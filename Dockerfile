@@ -43,6 +43,7 @@ COPY . /app/
 # Install Python dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir mlflow[extras] && \
     pip install --no-cache-dir apache-airflow[postgres,mysql]==${AIRFLOW_VERSION} --constraint /constraints-3.9.txt
 
 # Copy entrypoint script
