@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (classification_report, confusion_matrix, roc_auc_score, roc_curve, 
                              accuracy_score, precision_score, recall_score)
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
 import mlflow
 import mlflow.sklearn
 
@@ -22,7 +23,10 @@ def load_data(input_file, target_column, selected_features):
 def preprocess_data(X):
     """Impute missing values in feature set."""
     imputer = SimpleImputer(strategy='mean')
-    return imputer.fit_transform(X)
+    X_imputed = imputer.fit_transform(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_imputed)
+    return X_scaled
 
 def train_model(X_train, y_train, model):
     """Fit the model to the training data."""
