@@ -56,3 +56,7 @@ __pycache__/
 # MLFlow
 mlruns/
 mlartifacts/
+
+
+*.wav
+/models/
